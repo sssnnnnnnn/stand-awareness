@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal - 日記アプリ</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Journal</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <button class="nav-item active" data-view="today">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 18V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M2 12H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M18 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span>今日の日記</span>
+                    </button>
+                    
+                    <button class="nav-item" data-view="history">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3V9H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3.05 13A9 9 0 1 0 6 5.3L3 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>履歴</span>
+                    </button>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="section-title">最近の記録</div>
+                    <div class="recent-entries" id="recentEntries">
+                        <!-- 最近の記録がここに表示される -->
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="section-title">カレンダー</div>
+                    <div class="calendar-widget" id="calendarWidget">
+                        <div class="calendar-header">
+                            <button class="calendar-nav" id="prevMonth" title="前の月">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="15,18 9,12 15,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="calendar-title" id="calendarTitle">2024年7月</div>
+                            <button class="calendar-nav" id="nextMonth" title="次の月">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="9,18 15,12 9,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div class="weekday">日</div>
+                            <div class="weekday">月</div>
+                            <div class="weekday">火</div>
+                            <div class="weekday">水</div>
+                            <div class="weekday">木</div>
+                            <div class="weekday">金</div>
+                            <div class="weekday">土</div>
+                        </div>
+                        <div class="calendar-days" id="calendarDays">
+                            <!-- カレンダーの日付がここに表示される -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalEntries">0</span>
+                        <span class="stat-label">記録</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="currentStreak">0</span>
+                        <span class="stat-label">連続日数</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <div class="header-title">
+                    <h1 id="pageTitle">今日の日記</h1>
+                    <div class="current-date" id="currentDate"></div>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn" id="copyBtn" title="コピー">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" stroke="currentColor" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Views -->
+            <div class="content-container">
+                <!-- Today View -->
+                <section class="view active" id="todayView">
+                    <form class="diary-form" id="diaryForm">
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">GOOD & NEW</span>
+                                <span class="label-emoji">✨</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="goodNew" 
+                                placeholder="今日あった良いことや新しい発見を書いてみましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">何があって何を感じたか</span>
+                                <span class="label-emoji">💭</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="events" 
+                                placeholder="今日の出来事とそのときの感情を記録しましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">自分の成長のために抽象化すると</span>
+                                <span class="label-emoji">🌱</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="growth" 
+                                placeholder="今日の経験から学んだことを抽象化して書きましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">今日やりきること</span>
+                                <span class="label-emoji">🎯</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="tasks" 
+                                placeholder="今日中に達成したいことを書きましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16L21 8V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="17,21 17,13 7,13 7,21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="7,3 7,8 15,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                保存
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="clearBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                クリア
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- History View -->
+                <section class="view" id="historyView">
+                    <div class="history-header">
+                        <div class="search-bar">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
+                                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <input type="date" id="datePicker" class="date-picker" title="日付で検索">
+                        </div>
+                    </div>
+                    
+                    <div class="entries-grid" id="diaryList">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h3>まだ日記が記録されていません</h3>
+                            <p>「今日の日記」から最初の記録を始めましょう</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Entry Detail View -->
+                <section class="view" id="entryDetailView">
+                    <div class="entry-detail">
+                        <div class="entry-header">
+                            <button class="back-btn" id="backToHistoryBtn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="12,19 5,12 12,5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                戻る
+                            </button>
+                            <div class="entry-date" id="entryDate"></div>
+                            <div class="entry-actions">
+                                <button class="action-btn" id="editEntryBtn" title="編集">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                                <button class="action-btn" id="copyEntryBtn" title="コピー">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                        <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" stroke="currentColor" stroke-width="2" fill="none"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="entry-content" id="entryContent">
+                            <!-- Entry content will be populated here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Edit View -->
+                <section class="view" id="editView">
+                    <div class="edit-header">
+                        <button class="back-btn" id="backFromEditBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="12,19 5,12 12,5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            戻る
+                        </button>
+                        <div class="edit-title">
+                            <h2>日記を編集</h2>
+                            <div class="edit-date" id="editDate"></div>
+                        </div>
+                    </div>
+                    
+                    <form class="diary-form" id="editDiaryForm">
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">GOOD & NEW</span>
+                                <span class="label-emoji">✨</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="editGoodNew" 
+                                placeholder="今日あった良いことや新しい発見を書いてみましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">何があって何を感じたか</span>
+                                <span class="label-emoji">💭</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="editEvents" 
+                                placeholder="今日の出来事とそのときの感情を記録しましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">自分の成長のために抽象化すると</span>
+                                <span class="label-emoji">🌱</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="editGrowth" 
+                                placeholder="今日の経験から学んだことを抽象化して書きましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="form-label">
+                                <span class="label-text">今日やりきること</span>
+                                <span class="label-emoji">🎯</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="editTasks" 
+                                placeholder="今日中に達成したいことを書きましょう..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16L21 8V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="17,21 17,13 7,13 7,21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="7,3 7,8 15,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                保存
+                            </button>
+                            <button type="button" class="btn btn-danger" id="deleteEntryBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                削除
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

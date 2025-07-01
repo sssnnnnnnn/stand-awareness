@@ -1,0 +1,37 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#gradient)" filter="url(#shadow)"/>
+  
+  <!-- Book/Journal Icon -->
+  <g transform="translate(256, 256)">
+    <!-- Book Cover -->
+    <rect x="-80" y="-100" width="160" height="200" rx="16" fill="#ffffff" fill-opacity="0.95"/>
+    
+    <!-- Book Spine -->
+    <rect x="-80" y="-100" width="20" height="200" rx="16" fill="#ffffff" fill-opacity="0.7"/>
+    
+    <!-- Lines representing text -->
+    <line x1="-50" y1="-60" x2="50" y2="-60" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-50" y1="-30" x2="40" y2="-30" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-50" y1="0" x2="55" y2="0" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-50" y1="30" x2="35" y2="30" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-50" y1="60" x2="45" y2="60" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Pen Icon -->
+    <g transform="translate(40, -70) rotate(45)">
+      <rect x="-2" y="-20" width="4" height="40" fill="#fbbf24" rx="2"/>
+      <circle cx="0" cy="-20" r="3" fill="#f59e0b"/>
+      <polygon points="-2,20 2,20 0,25" fill="#374151"/>
+    </g>
+  </g>
+</svg>
