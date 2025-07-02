@@ -422,26 +422,26 @@ class JournalApp {
     renderEntryGrid(entries) {
         if (entries.length === 0) {
             this.diaryList.innerHTML = 
-                `<div class="empty-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <h3>まだ日記が記録されていません</h3>
-                    <p>「今日の日記」から最初の記録を始めましょう</p>
-                </div>`;
+                `<div class="empty-state">` +
+                `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">` +
+                `<path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` +
+                `<polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` +
+                `<line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` +
+                `<line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` +
+                `<polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` +
+                `</svg>` +
+                `<h3>まだ日記が記録されていません</h3>` +
+                `<p>「今日の日記」から最初の記録を始めましょう</p>` +
+                `</div>`;
             return;
         }
         
         this.diaryList.innerHTML = entries.map(entry => {
             const preview = this.createPreview(entry.data);
-            return `<div class="entry-card" data-date="${entry.date}">
-                    <div class="entry-card-date">${this.formatDateForDisplay(entry.date)}</div>
-                    <div class="entry-card-preview">${preview}</div>
-                </div>`;
+            return `<div class="entry-card" data-date="${entry.date}">` +
+                   `<div class="entry-card-date">${this.formatDateForDisplay(entry.date)}</div>` +
+                   `<div class="entry-card-preview">${preview}</div>` +
+                   `</div>`;
         }).join('');
         
         // Add click handlers
@@ -494,15 +494,15 @@ class JournalApp {
         ];
         
         this.entryContent.innerHTML = sections.map(section => 
-            `<div class="entry-section">
-                <div class="entry-section-title">
-                    <span>${section.emoji}</span>
-                    <span>${section.title}</span>
-                </div>
-                <div class="entry-section-content">
-                    ${data[section.key] || '記録なし'}
-                </div>
-            </div>`
+            `<div class="entry-section">` +
+            `<div class="entry-section-title">` +
+            `<span>${section.emoji}</span>` +
+            `<span>${section.title}</span>` +
+            `</div>` +
+            `<div class="entry-section-content">` +
+            `${data[section.key] || '記録なし'}` +
+            `</div>` +
+            `</div>`
         ).join('');
     }
 
@@ -544,10 +544,10 @@ class JournalApp {
         }
         
         this.recentEntries.innerHTML = entries.map(entry => 
-            `<div class="recent-entry" data-date="${entry.date}">
-                <div class="recent-entry-date">${this.formatDateForDisplay(entry.date)}</div>
-                <div class="recent-entry-preview">${this.createPreview(entry.data)}</div>
-            </div>`
+            `<div class="recent-entry" data-date="${entry.date}">` +
+            `<div class="recent-entry-date">${this.formatDateForDisplay(entry.date)}</div>` +
+            `<div class="recent-entry-preview">${this.createPreview(entry.data)}</div>` +
+            `</div>`
         ).join('');
         
         // Add click handlers
