@@ -49,10 +49,21 @@ class JournalApp {
         };
         
         // Action elements
+        this.syncBtn = document.getElementById('syncBtn');
         this.copyBtn = document.getElementById('copyBtn');
         this.clearBtn = document.getElementById('clearBtn');
         this.datePicker = document.getElementById('datePicker');
         this.diaryList = document.getElementById('diaryList');
+        
+        // Sync modal elements
+        this.syncModal = document.getElementById('syncModal');
+        this.closeSyncModal = document.getElementById('closeSyncModal');
+        this.githubToken = document.getElementById('githubToken');
+        this.saveTokenBtn = document.getElementById('saveTokenBtn');
+        this.testSyncBtn = document.getElementById('testSyncBtn');
+        this.fullSyncBtn = document.getElementById('fullSyncBtn');
+        this.statusDot = document.getElementById('statusDot');
+        this.statusText = document.getElementById('statusText');
         
         // Entry detail elements
         this.entryContent = document.getElementById('entryContent');
@@ -88,9 +99,19 @@ class JournalApp {
         this.clearBtn?.addEventListener('click', () => this.handleClear());
         
         // Action events
+        this.syncBtn?.addEventListener('click', () => this.openSyncModal());
         this.copyBtn?.addEventListener('click', () => this.handleCopy());
         this.copyEntryBtn?.addEventListener('click', () => this.handleCopyEntry());
         this.datePicker?.addEventListener('change', (e) => this.handleDateSearch(e));
+        
+        // Sync modal events
+        this.closeSyncModal?.addEventListener('click', () => this.closeSyncModalHandler());
+        this.saveTokenBtn?.addEventListener('click', () => this.saveToken());
+        this.testSyncBtn?.addEventListener('click', () => this.testSync());
+        this.fullSyncBtn?.addEventListener('click', () => this.fullSync());
+        this.syncModal?.addEventListener('click', (e) => {
+            if (e.target === this.syncModal) this.closeSyncModalHandler();
+        });
         
         // Calendar events
         this.prevMonthBtn?.addEventListener('click', () => this.previousMonth());
@@ -124,6 +145,7 @@ class JournalApp {
         this.loadRecentEntries();
         this.renderCalendar();
         this.showView('today');
+        this.initializeSync();
     }
 
     // ========== View Management ==========
@@ -282,27 +304,6 @@ class JournalApp {
     }
 
     // ========== Form Handlers ==========
-    handleSave(e) {
-        e.preventDefault();
-        
-        const data = this.getFormData(this.textareas);
-        const isEmpty = this.isFormEmpty(data);
-        
-        if (isEmpty) {
-            this.showToast('少なくとも1つの項目に入力してください', 'error');
-            return;
-        }
-        
-        const today = new Date().toISOString().split('T')[0];
-        if (this.saveEntry(today, data)) {
-            this.showToast('日記を保存しました！', 'success');
-            this.updateStats();
-            this.loadRecentEntries();
-            this.updateCalendar();
-        } else {
-            this.showToast('保存に失敗しました', 'error');
-        }
-    }
 
     handleUpdate(e) {
         e.preventDefault();
@@ -746,6 +747,9 @@ class JournalApp {
             case 'warning':
                 iconSvg = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/>';
                 break;
+            case 'info':
+                iconSvg = '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2"/>';
+                break;
         }
         toastIcon.innerHTML = iconSvg;
         
@@ -791,6 +795,176 @@ class JournalApp {
                 this.showEntryDetail();
             }
         }
+    }
+
+    // ========== Sync Management ==========
+    initializeSync() {
+        if (window.githubSync && window.githubSync.hasToken()) {
+            this.updateSyncStatus(true, '設定済み');
+        } else {
+            this.updateSyncStatus(false, '未設定');
+        }
+    }
+
+    openSyncModal() {
+        this.syncModal.classList.add('active');
+        if (window.githubSync && window.githubSync.hasToken()) {
+            this.githubToken.value = ''; // Don't show the actual token
+            this.testSync();
+        }
+    }
+
+    closeSyncModalHandler() {
+        this.syncModal.classList.remove('active');
+        this.githubToken.value = '';
+    }
+
+    async saveToken() {
+        const token = this.githubToken.value.trim();
+        if (!token) {
+            this.showToast('トークンを入力してください', 'error');
+            return;
+        }
+
+        if (!window.githubSync) {
+            this.showToast('同期機能が利用できません', 'error');
+            return;
+        }
+
+        try {
+            window.githubSync.setToken(token);
+            this.showToast('トークンを保存しました', 'success');
+            this.testSync();
+        } catch (error) {
+            this.showToast('トークンの保存に失敗しました', 'error');
+            console.error('Failed to save token:', error);
+        }
+    }
+
+    async testSync() {
+        if (!window.githubSync) {
+            this.updateSyncStatus(false, 'エラー: 同期機能が利用できません');
+            return;
+        }
+
+        try {
+            this.updateSyncStatus(null, '接続テスト中...');
+            const status = await window.githubSync.checkSyncStatus();
+            
+            if (status.canSync) {
+                this.updateSyncStatus(true, '接続成功');
+                this.fullSyncBtn.style.display = 'inline-flex';
+                this.showToast('GitHub接続に成功しました', 'success');
+            } else {
+                this.updateSyncStatus(false, `接続失敗: ${status.error}`);
+                this.fullSyncBtn.style.display = 'none';
+                this.showToast('GitHub接続に失敗しました', 'error');
+            }
+        } catch (error) {
+            this.updateSyncStatus(false, `エラー: ${error.message}`);
+            this.fullSyncBtn.style.display = 'none';
+            this.showToast('接続テストに失敗しました', 'error');
+            console.error('Sync test failed:', error);
+        }
+    }
+
+    async fullSync() {
+        if (!window.githubSync) {
+            this.showToast('同期機能が利用できません', 'error');
+            return;
+        }
+
+        try {
+            this.showToast('同期中...', 'info');
+            
+            // Get all local entries
+            const localEntries = this.getAllEntries();
+            let syncedCount = 0;
+            let errorCount = 0;
+
+            // Sync each entry to GitHub
+            for (const entry of localEntries) {
+                try {
+                    await window.githubSync.saveEntry(entry.date, entry.data);
+                    syncedCount++;
+                } catch (error) {
+                    console.error(`Failed to sync entry ${entry.date}:`, error);
+                    errorCount++;
+                }
+            }
+
+            // Get entries from GitHub and update local storage
+            const cloudEntries = await window.githubSync.getAllEntries();
+            for (const cloudEntry of cloudEntries) {
+                const localEntry = this.getEntry(cloudEntry.date);
+                if (!localEntry || new Date(cloudEntry.data.lastModified) > new Date(localEntry.lastModified)) {
+                    this.saveEntry(cloudEntry.date, cloudEntry.data);
+                }
+            }
+
+            // Update UI
+            this.loadHistoryView();
+            this.updateStats();
+            this.loadRecentEntries();
+
+            if (errorCount === 0) {
+                this.showToast(`${syncedCount}件の日記を同期しました`, 'success');
+            } else {
+                this.showToast(`${syncedCount}件同期、${errorCount}件失敗`, 'warning');
+            }
+        } catch (error) {
+            this.showToast('同期に失敗しました', 'error');
+            console.error('Full sync failed:', error);
+        }
+    }
+
+    updateSyncStatus(connected, message) {
+        if (connected === true) {
+            this.statusDot.className = 'status-dot connected';
+        } else if (connected === false) {
+            this.statusDot.className = 'status-dot error';
+        } else {
+            this.statusDot.className = 'status-dot';
+        }
+        this.statusText.textContent = message;
+    }
+
+    // Enhanced save method with sync
+    async handleSave(e) {
+        e.preventDefault();
+        const data = this.getFormData(this.textareas);
+        
+        if (this.isFormEmpty(data)) {
+            this.showToast('少なくとも一つの項目を入力してください', 'warning');
+            return;
+        }
+        
+        const today = this.getTodayDateString();
+        const entry = {
+            ...data,
+            timestamp: new Date().toISOString(),
+            lastModified: new Date().toISOString()
+        };
+        
+        // Save locally
+        this.saveEntry(today, entry);
+        
+        // Try to sync to cloud
+        if (window.githubSync && window.githubSync.hasToken()) {
+            try {
+                await window.githubSync.saveEntry(today, entry);
+                this.showToast('日記を保存し、クラウドに同期しました', 'success');
+            } catch (error) {
+                console.error('Cloud sync failed:', error);
+                this.showToast('日記を保存しました（同期は失敗）', 'warning');
+            }
+        } else {
+            this.showToast('日記を保存しました', 'success');
+        }
+        
+        this.updateStats();
+        this.loadRecentEntries();
+        this.renderCalendar();
     }
 }
 
