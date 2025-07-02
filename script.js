@@ -89,7 +89,9 @@ class JournalApp {
     bindEvents() {
         // Navigation events
         this.mobileMenuToggle?.addEventListener('click', () => this.toggleSidebar());
-        this.navItems.forEach(item => {
+        console.log('Nav items found:', this.navItems.length);
+        this.navItems.forEach((item, index) => {
+            console.log(`Nav item ${index}:`, item.dataset.view);
             item.addEventListener('click', (e) => this.handleNavigation(e));
         });
         
@@ -180,6 +182,9 @@ class JournalApp {
                 this.loadDiaryHistory();
                 break;
         }
+        
+        // Debug log for mobile troubleshooting
+        console.log(`Switched to view: ${viewName}`);
     }
 
     showEntryDetail(dateStr = this.currentDate) {
@@ -207,13 +212,20 @@ class JournalApp {
 
     showHistoryView() {
         this.showView('history');
+        this.loadDiaryHistory();
     }
 
     // ========== Navigation Handlers ==========
     handleNavigation(e) {
+        console.log('Navigation clicked:', e.currentTarget);
         const viewName = e.currentTarget.dataset.view;
+        console.log('View name:', viewName);
         if (viewName) {
             this.showView(viewName);
+            // モバイルでサイドバーを自動で閉じる
+            if (window.innerWidth <= 1024) {
+                this.sidebar.classList.remove('open');
+            }
         }
     }
 
@@ -677,18 +689,21 @@ class JournalApp {
         // Check if entry exists for this date
         const entry = this.getEntry(dateStr);
         if (entry) {
-            // Show the entry detail directly
+            // Show existing entry
             this.showEntryDetail(dateStr);
         } else {
-            // If no entry exists, navigate to today view for today's date, or show info for other dates
-            const today = new Date().toISOString().split('T')[0];
-            if (dateStr === today) {
+            // Show today's view for new entry
+            if (dateStr === this.getTodayDateString()) {
                 this.showView('today');
             } else {
-                // For past or future dates, just show a toast message
-                const formattedDate = this.formatDateForDisplay(dateStr);
-                this.showToast(`${formattedDate}の日記はまだ作成されていません`, 'info');
+                // Show empty entry detail for past/future dates
+                this.showEntryDetail(dateStr);
             }
+        }
+        
+        // モバイルでサイドバーを自動で閉じる
+        if (window.innerWidth <= 1024) {
+            this.sidebar.classList.remove('open');
         }
     }
     
