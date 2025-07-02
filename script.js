@@ -89,9 +89,7 @@ class JournalApp {
     bindEvents() {
         // Navigation events
         this.mobileMenuToggle?.addEventListener('click', () => this.toggleSidebar());
-        console.log('Nav items found:', this.navItems.length);
-        this.navItems.forEach((item, index) => {
-            console.log(`Nav item ${index}:`, item.dataset.view);
+        this.navItems.forEach(item => {
             item.addEventListener('click', (e) => this.handleNavigation(e));
         });
         
@@ -183,8 +181,6 @@ class JournalApp {
                 break;
         }
         
-        // Debug log for mobile troubleshooting
-        console.log(`Switched to view: ${viewName}`);
     }
 
     showEntryDetail(dateStr = this.currentDate) {
@@ -217,9 +213,7 @@ class JournalApp {
 
     // ========== Navigation Handlers ==========
     handleNavigation(e) {
-        console.log('Navigation clicked:', e.currentTarget);
         const viewName = e.currentTarget.dataset.view;
-        console.log('View name:', viewName);
         if (viewName) {
             this.showView(viewName);
             // モバイルでサイドバーを自動で閉じる
@@ -427,8 +421,8 @@ class JournalApp {
 
     renderEntryGrid(entries) {
         if (entries.length === 0) {
-            this.diaryList.innerHTML = `
-                <div class="empty-state">
+            this.diaryList.innerHTML = 
+                `<div class="empty-state">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -438,19 +432,16 @@ class JournalApp {
                     </svg>
                     <h3>まだ日記が記録されていません</h3>
                     <p>「今日の日記」から最初の記録を始めましょう</p>
-                </div>
-            `;
+                </div>`;
             return;
         }
         
         this.diaryList.innerHTML = entries.map(entry => {
             const preview = this.createPreview(entry.data);
-            return `
-                <div class="entry-card" data-date="${entry.date}">
+            return `<div class="entry-card" data-date="${entry.date}">
                     <div class="entry-card-date">${this.formatDateForDisplay(entry.date)}</div>
                     <div class="entry-card-preview">${preview}</div>
-                </div>
-            `;
+                </div>`;
         }).join('');
         
         // Add click handlers
@@ -502,8 +493,8 @@ class JournalApp {
             { key: 'tasks', title: '今日やりきること', emoji: '🎯' }
         ];
         
-        this.entryContent.innerHTML = sections.map(section => `
-            <div class="entry-section">
+        this.entryContent.innerHTML = sections.map(section => 
+            `<div class="entry-section">
                 <div class="entry-section-title">
                     <span>${section.emoji}</span>
                     <span>${section.title}</span>
@@ -511,8 +502,8 @@ class JournalApp {
                 <div class="entry-section-content">
                     ${data[section.key] || '記録なし'}
                 </div>
-            </div>
-        `).join('');
+            </div>`
+        ).join('');
     }
 
     updateStats() {
@@ -552,12 +543,12 @@ class JournalApp {
             return;
         }
         
-        this.recentEntries.innerHTML = entries.map(entry => `
-            <div class="recent-entry" data-date="${entry.date}">
+        this.recentEntries.innerHTML = entries.map(entry => 
+            `<div class="recent-entry" data-date="${entry.date}">
                 <div class="recent-entry-date">${this.formatDateForDisplay(entry.date)}</div>
                 <div class="recent-entry-preview">${this.createPreview(entry.data)}</div>
-            </div>
-        `).join('');
+            </div>`
+        ).join('');
         
         // Add click handlers
         this.recentEntries.querySelectorAll('.recent-entry').forEach(item => {
