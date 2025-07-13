@@ -582,6 +582,11 @@ class JournalApp {
         return date.toLocaleDateString('ja-JP', options);
     }
 
+    getTodayDateString() {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    }
+
     // ========== Calendar Functions ==========
     renderCalendar() {
         const year = this.currentCalendarDate.getFullYear();
@@ -734,9 +739,19 @@ class JournalApp {
     }
 
     showToast(message, type = 'success') {
+        if (!this.toast) {
+            console.error('Toast element not found');
+            return;
+        }
+        
         const toastContent = this.toast.querySelector('.toast-content');
         const toastMessage = this.toast.querySelector('.toast-message');
         const toastIcon = this.toast.querySelector('.toast-icon');
+        
+        if (!toastMessage || !toastIcon) {
+            console.error('Toast child elements not found');
+            return;
+        }
         
         // Update message
         toastMessage.textContent = message;
